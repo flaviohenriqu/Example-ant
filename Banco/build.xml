@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Banco" default="">
+	<!-- SYSTEM DEPENDENT VARIABLES    -   CHANGE FOR YOUR NEEDS  -->
+	<property name="src.dir"               value="src"/>
+	<property name="src.disp"               value="../DisplayUpdate/src"/>
+	<property name="src.trans"               value="../TransactionManagement/src"/>
+	<property name="dest.dir"              value="classes"/>
+	<property name="release.dir"           value="release-banc"/>
+	
+	<!-- SOFTWARE CONFIGURATION HELPER/AUXILIARY TASKS -->
+	<target name="clean">
+		<delete dir="${dest.dir}" />
+		<delete dir="${release.dir}" />
+	</target>
+
+	<target name="prepare">
+		<mkdir dir="${dest.dir}" />
+		<mkdir dir="${release.dir}" />
+		<mkdir dir="${release.dir}/bin" />
+		<mkdir dir="${release.dir}/src" />
+	</target>	
+	
+	<!-- UTIL FOR CLASSPATH -->
+	<path id="classpath">
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- COMPILATION -->
+	<target name="compile-banco" depends="" description="compile">
+		<javac srcdir="${src.dir}" destdir="${dest.dir}" classpathref="classpath" />
+	</target>
+	
+	<target name="compile-all-systems" depends="" description="compile all projects">
+		<javac destdir="${dest.dir}" classpathref="classpath">
+			<src path="${src.dir}"/>
+    		<src path="${src.disp}"/>
+    		<src path="${src.trans}"/>
+		</javac>	
+	</target>
+
+	<!-- JAR -->
+	<target name="jar-banco" depends="" description="creates JAR without test classes.">
+		<jar destfile="${release.dir}/bin/banco.jar">
+			<fileset dir="${dest.dir}">
+				<exclude name="br/ufpe/cin/motorola/tests/" />
+				<exclude name="br/ufpe/cin/motorola/du/" />
+				<exclude name="br/ufpe/cin/motorola/tm/" />			    
+			</fileset>
+		</jar>		
+	</target>
+
+	<!-- JAR FOR ALL PROJECTS: Banco/DisplayUpdate/TransactionManagement -->
+	<target name="jar-integrate-systems" depends="" 
+		description="creates JAR integrating all systems without test classes.">
+		<jar destfile="${release.dir}/bin/banco-integrate.jar">
+			<fileset dir="${dest.dir}">
+				<exclude name="br/ufpe/cin/motorola/tests/" />
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- RUN -->
+	<target name="run-banco" depends="" description="run banco">
+		<java classname="br.ufpe.cin.motorola.banco.Banco">
+			<classpath path="${dest.dir}" />
+		</java>
+	</target>
+
+	<!-- TESTS -->
+	<target name="test-creditar" >
+		<java classname="br.ufpe.cin.motorola.tests.TestCreditar">
+			<classpath path="${dest.dir}" />
+		</java>	    
+	</target>
+	
+	<target name="test-debitar" >
+		<java classname="br.ufpe.cin.motorola.tests.TestDebitar">
+			<classpath path="${dest.dir}" />
+		</java>	    
+	</target>	
+	
+	<target name="run-all-tests-banco" depends="test-creditar, test-debitar" description="run all banco tests">
+	</target>
+</project>
